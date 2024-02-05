@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+    python_app:
+        build:
+            context: .
+        container_name: "python_app"
+        volumes:
+            - ./api/:/app/api
+            - ./tests/:/app/tests
+            - ./src/:/app/src
+            - ./parameters.yaml:/app/parameters.yaml
+        environment:
+          - FLASK_ENV=development
+          - PYTHONPATH=/app/
+        command: sh -c "cd /app/
+            && /usr/bin/supervisord -c /etc/supervisor/supervisord.conf"
+        ports:
+          - 56733:80
+        expose:
+            - 56733
+    python_elasticsearch:
+        build: ./ci/elasticsearch
+        container_name: "python_elasticsearch"
+        environment:
+            - discovery.type=single-node
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        volumes:
+            - ./ci/data/es/db:/usr/share/elasticsearch/data
+            - ./ci/data/es/logs:/usr/share/elasticsearch/logs
+            - ./ci/data/es/repo:/usr/share/elasticsearch/repo
+        ports:
+            - "9203:9200"
+        expose:
+            - "9203"

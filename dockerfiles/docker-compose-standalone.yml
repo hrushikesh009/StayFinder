@@ -1,0 +1,26 @@
+version: '2.2'
+services:
+  es-standalone:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.3
+    container_name: es-standalone
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data-standalone:/usr/share/elasticsearch/data
+    ports:
+      - 9201:9200
+    networks:
+      - elastic-standalone
+  
+volumes:
+  data-standalone:
+    driver: local
+
+networks:
+  elastic-standalone:
+    driver: bridge

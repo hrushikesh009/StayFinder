@@ -1,0 +1,3 @@
+elasticsearch:
+  hosts:
+    - "python_elasticsearch:9200"
